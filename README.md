@@ -7,7 +7,7 @@
 
 🖼️ If there are `.jpg` files on the disk, I get the option to move them to my Desktop.
 
-📹 If there are `.mts` files (video clips), I get the option to move them to my Desktop and rename them to their date created (my camera saves them with a simple serial `0001.mts`, `0002.mts`, ..., which I dislike).
+📹 If there are `.mts` files (video clips), I get the option to move them to my Desktop and rename them to their date created (my camera saves them with a simple serial `0000.mts`, `0001.mts`, ..., which I dislike).
 
 🗃️ If there are files that my camera uses to manage its internal catalogue, I get the option to delete them; I also get the option to replace them with an empty catalogue so my camera doesn’t tell me photos are missing. The files for the empty catalogue comprise the `DefaultDiskContents` folder.
 
