@@ -10,15 +10,15 @@ namespace TransferPhotosFromCard
 {
     class Program
     {
-        static string Disk = @"D:\";
-        static string FolderToCopyTo = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        private static string Disk = @"D:\";
+        private static string FolderToCopyTo = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
-        enum DesiredActionForFileType
+        private enum DesiredActionForFileType
         {
             AskUserForAction, Delete, Ignore, Move, MoveAndRename
         }
 
-        static DesiredActionForFileType GetDesiredActionForFileType(string filepath)
+        private static DesiredActionForFileType GetDesiredActionForFileType(string filepath)
         {
             switch (Path.GetExtension(filepath).ToLower())
             {
@@ -45,7 +45,7 @@ namespace TransferPhotosFromCard
         static void Main(string[] args)
         {
             Console.Title = "Transfer Photos from Card";
-            Announce(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
+            Announce(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app!");
             Announce("Looking for files on your memory-card...\n");
 
             var groupedFilepaths = GetFilesFromCard(true)
@@ -64,13 +64,14 @@ namespace TransferPhotosFromCard
             Console.ReadLine();
         }
 
-        //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
+        //// Returns an array of filepaths.
         private static string[] GetFilesFromCard(bool warnIfNoDisk)
         {
             if (Directory.Exists(Disk))
             {
                 return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
             }
+            //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
             else
             {
                 if (warnIfNoDisk) {
@@ -85,6 +86,7 @@ namespace TransferPhotosFromCard
             }
         }
 
+        //// Do whatever bulk action is appropriate for a group of files for which a common action is appropriate.
         private static void ProcessOneGroupOfFiles(IGrouping<DesiredActionForFileType, string> group)
         {
             AnnounceGroup(group);
@@ -113,6 +115,10 @@ namespace TransferPhotosFromCard
             Console.WriteLine();
         }
 
+        //// The contents of “DefaultDiskContents” folder allow my camera to maintain
+        //// an internal catalogue of photos and videos. 
+        //// If these catalogue files are deleted and not replaced on the memory-card,
+        //// my camera will spend a few seconds re-creating them before I can use it.
         private static void CopyDefaultDiskContents()
         {
             AskUserAQuestion("Do you want to copy default contents to the disk?");
@@ -136,17 +142,17 @@ namespace TransferPhotosFromCard
         //// Adapted from https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
         private static void CopyDirectory(string sourceDirName, string destDirName)
         {
-            // Get the subdirectories for the specified directory.
+            //// Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
             DirectoryInfo[] dirs = dir.GetDirectories();
 
-            // If the destination directory doesn't exist, create it.
+            //// If the destination directory doesn’t exist, create it.
             if (!Directory.Exists(destDirName))
             {
                 Directory.CreateDirectory(destDirName);
             }
 
-            // Get the files in the directory and copy them to the new location.
+            //// Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
@@ -155,7 +161,7 @@ namespace TransferPhotosFromCard
                 file.CopyTo(temppath, true);
             }
 
-            // Copy subdirectories and their contents to new location.
+            //// Copy subdirectories and their contents to their new location.
             foreach (DirectoryInfo subdir in dirs)
             {
                 string temppath = Path.Combine(destDirName, subdir.Name);
@@ -163,6 +169,7 @@ namespace TransferPhotosFromCard
             }
         }
 
+        //// Actions to be applied to files individually, listed in the enum `DesiredActionForFileType`.
         private static void Move(string filepath)
         {
             string filename = Path.GetFileName(filepath);
@@ -209,6 +216,7 @@ namespace TransferPhotosFromCard
             }
         }
 
+        //// Apply a given action to multiple given files.
         private static void PerformActionOnSeveralFiles(Action<string> action, IEnumerable<string> filepaths)
         {
             foreach (string filepath in filepaths)
@@ -222,10 +230,7 @@ namespace TransferPhotosFromCard
             AskUserAQuestion(questionToAskUser);
             if (GetBoolFromUser())
             {
-                foreach (string filepath in filepaths)
-                {
-                    action(filepath);
-                }
+                PerformActionOnSeveralFiles(action, filepaths);
             }
             else
             {
@@ -233,6 +238,7 @@ namespace TransferPhotosFromCard
             }
         }
 
+        //// Ask user to enter a value and return a boolean based off it.
         private static bool GetBoolFromUser()
         {
             AskUserAQuestion("Please enter y/n/true/false.");
@@ -252,6 +258,7 @@ namespace TransferPhotosFromCard
             }
         }
 
+        //// Overloaded methods based on `Announce`.
         private static void AskUserAQuestion(string question)
         {
             Announce(ConsoleColor.Magenta, question);
@@ -278,6 +285,7 @@ namespace TransferPhotosFromCard
             Announce(ConsoleColor.Cyan, message);
         }
 
+        //// Write to console, alternating between the given colour and white.
         private static void Announce(ConsoleColor colour, params string[] message)
         {
             for (int i = 0; i < message.Length; i++)
@@ -299,6 +307,7 @@ namespace TransferPhotosFromCard
             PerformActionOnSeveralFiles(AnnounceFile, group);
         }
 
+        //// Recursively delete `directory` and any subdirectories, where empty.
         private static void DeleteEmptyDirectory(string directory)
         {
             if (Directory.GetFiles(directory, "*", SearchOption.AllDirectories).Length == 0)
@@ -315,9 +324,10 @@ namespace TransferPhotosFromCard
             }
         }
 
-        private static void DeleteEmptySubdirectories(string directory)
+        //// Delete subfolders, but not `superdirectory`.
+        private static void DeleteEmptySubdirectories(string superdirectory)
         {
-            foreach (string subdirectory in Directory.GetDirectories(directory))
+            foreach (string subdirectory in Directory.GetDirectories(superdirectory))
             {
                 DeleteEmptyDirectory(subdirectory);
             }
