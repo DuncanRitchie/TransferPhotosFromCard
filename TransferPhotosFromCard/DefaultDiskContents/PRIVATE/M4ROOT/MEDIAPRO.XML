@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MediaProfile xmlns="http://xmlns.sony.net/pro/metadata/mediaprofile" createdAt="2020-05-23T15:32:28+01:00" version="2.10">
+	<Properties>
+		<System systemId="B072BFFFFEF823F9" systemKind="DSC-HX90" masterVersion="XAVC-M4@1.10.00"/>
+		<Attached mediaId="285DC5A5928905DF23F9B072BFFFFEF8" mediaKind="AffordableMemoryCard" mediaName=""/>
+	</Properties>
+</MediaProfile>

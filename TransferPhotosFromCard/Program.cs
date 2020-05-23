@@ -78,6 +78,7 @@ namespace TransferPhotosFromCard
                 Console.WriteLine();
             }
 
+            CopyDefaultDiskContents();
             DeleteEmptySubdirectories(Disk);
             AskForUserInput("The program has finished. Type Enter to exit.");
             Console.ReadLine();
@@ -86,6 +87,56 @@ namespace TransferPhotosFromCard
         private static string[] GetFilesFromCard()
         {
             return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
+        }
+
+        private static void CopyDefaultDiskContents()
+        {
+            AskForUserInput("Do you want to copy default contents to the disk?");
+            if (GetBoolFromUser())
+            {
+                DirectoryInfo sourceDir = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory,
+                          @"..\..\DefaultDiskContents"));
+
+                if (sourceDir.Exists)
+                {
+                    AnnounceCurrentTask("Copying default disk contents to ", Disk, "...");
+                    CopyDirectory(sourceDir.FullName, Disk);
+                }
+                else
+                {
+                    AnnounceCurrentTask("Sorry, the default disk contents do not exist.");
+                }
+            }
+        }
+
+        //// Adapted from https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+        private static void CopyDirectory(string sourceDirName, string destDirName)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                AnnounceCurrentTask("Copying ", file.Name, " to ", destDirName, "...");
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, true);
+            }
+
+            // Copy subdirectories and their contents to new location.
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                string temppath = Path.Combine(destDirName, subdir.Name);
+                CopyDirectory(subdir.FullName, temppath);
+            }
         }
 
         private static void Move(string filepath)
@@ -218,21 +269,29 @@ namespace TransferPhotosFromCard
             PerformActionOnSeveralFiles(AnnounceFile, group);
         }
 
-        private static void DeleteEmptySubdirectories(string directory)
+        private static void DeleteEmptyDirectory(string directory)
         {
             if (Directory.GetFiles(directory, "*", SearchOption.AllDirectories).Length == 0)
             {
                 foreach (string subdirectory in Directory.GetDirectories(directory))
                 {
-                    DeleteEmptySubdirectories(subdirectory);
+                    DeleteEmptyDirectory(subdirectory);
                 }
-                if (Directory.GetDirectories(directory).Length == 0
-                    && !directory.Equals(Disk))
+                if (Directory.GetDirectories(directory).Length == 0)
                 {
                     AnnounceCurrentTask("Deleting empty directory ", directory, "...");
                     Directory.Delete(directory);
                 }
             }
+        }
+
+        private static void DeleteEmptySubdirectories(string directory)
+        {
+            foreach (string subdirectory in Directory.GetDirectories(directory))
+            {
+                DeleteEmptyDirectory(subdirectory);
+            }
+            Console.WriteLine();
         }
     }
 }
