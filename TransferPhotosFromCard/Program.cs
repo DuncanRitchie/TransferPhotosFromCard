@@ -45,8 +45,8 @@ namespace TransferPhotosFromCard
         static void Main(string[] args)
         {
             Console.Title = "Transfer Photos from Card";
-            AnnounceCurrentTask(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
-            AnnounceCurrentTask("Looking for files on your memory-card...\n");
+            Announce(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
+            Announce("Looking for files on your memory-card...\n");
 
             var groupedFilepaths = GetFilesFromCard(true)
                 .GroupBy(file => GetDesiredActionForFileType(file))
@@ -60,7 +60,7 @@ namespace TransferPhotosFromCard
             CopyDefaultDiskContents();
             DeleteEmptySubdirectories(Disk);
 
-            AskForUserInput("The program has finished. Type Enter to exit.");
+            AskUserAQuestion("The program has finished. Type Enter to exit.");
             Console.ReadLine();
         }
 
@@ -74,7 +74,7 @@ namespace TransferPhotosFromCard
             else
             {
                 if (warnIfNoDisk) {
-                    AnnounceCurrentTask(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory-card.");
+                    Announce(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory-card.");
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace TransferPhotosFromCard
 
         private static void CopyDefaultDiskContents()
         {
-            AskForUserInput("Do you want to copy default contents to the disk?");
+            AskUserAQuestion("Do you want to copy default contents to the disk?");
             if (GetBoolFromUser())
             {
                 DirectoryInfo sourceDir = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory,
@@ -123,12 +123,12 @@ namespace TransferPhotosFromCard
 
                 if (sourceDir.Exists)
                 {
-                    AnnounceCurrentTask("Copying default disk contents to ", Disk, "...");
+                    Announce("Copying default disk contents to ", Disk, "...");
                     CopyDirectory(sourceDir.FullName, Disk);
                 }
                 else
                 {
-                    AnnounceCurrentTask("Sorry, the default disk contents do not exist.");
+                    Announce("Sorry, the default disk contents do not exist.");
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace TransferPhotosFromCard
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
-                AnnounceCurrentTask("Copying ", file.Name, " to ", destDirName, "...");
+                Announce("Copying ", file.Name, " to ", destDirName, "...");
                 string temppath = Path.Combine(destDirName, file.Name);
                 file.CopyTo(temppath, true);
             }
@@ -167,7 +167,7 @@ namespace TransferPhotosFromCard
         {
             string filename = Path.GetFileName(filepath);
             string newPath = Path.Combine(FolderToCopyTo, filename);
-            AnnounceCurrentTask("Moving ", filename, " to ", FolderToCopyTo, "...");
+            Announce("Moving ", filename, " to ", FolderToCopyTo, "...");
             File.Move(filepath, newPath);
         }
 
@@ -176,27 +176,27 @@ namespace TransferPhotosFromCard
             string filename = Path.GetFileName(filepath);
             string newFileName = $"{File.GetCreationTime(filepath).ToString("yyyy-MM-dd hh-mm-ss")}{Path.GetExtension(filepath)}";
             string newPath = Path.Combine(FolderToCopyTo, newFileName);
-            AnnounceCurrentTask("Renaming ", filename, " to ", newFileName, " and moving it to ", FolderToCopyTo, "...");
+            Announce("Renaming ", filename, " to ", newFileName, " and moving it to ", FolderToCopyTo, "...");
             File.Move(filepath, newPath);
         }
 
         private static void Ignore(string filepath)
         {
-            AnnounceCurrentTask("", Path.GetFileName(filepath), " will not be copied.");
+            Announce("", Path.GetFileName(filepath), " will not be copied.");
         }
 
         private static void Delete(string filepath)
         {
-            AnnounceCurrentTask("Deleting ", Path.GetFileName(filepath), "...");
+            Announce("Deleting ", Path.GetFileName(filepath), "...");
             File.Delete(filepath);
         }
 
         private static void AskUserForAction(string filepath)
         {
-            AskForUserInput($"I don’t know what to do with {Path.GetFileName(filepath)}. Should I copy it?");
+            AskUserAQuestion("I don’t know what to do with ", Path.GetFileName(filepath), ". Should I move it onto your computer?");
             if (GetBoolFromUser())
             {
-                AskForUserInput("Should I rename it?");
+                AskUserAQuestion("Should I rename it?");
                 if (GetBoolFromUser())
                 {
                     MoveAndRename(filepath);
@@ -219,7 +219,7 @@ namespace TransferPhotosFromCard
 
         private static void PerformActionOnSeveralFilesIfUserAllows(Action<string> action, IEnumerable<string> filepaths, string questionToAskUser)
         {
-            AskForUserInput(questionToAskUser);
+            AskUserAQuestion(questionToAskUser);
             if (GetBoolFromUser())
             {
                 foreach (string filepath in filepaths)
@@ -229,13 +229,13 @@ namespace TransferPhotosFromCard
             }
             else
             {
-                AnnounceCurrentTask("We will not do that then.");
+                Announce("We will not do that then.");
             }
         }
 
         private static bool GetBoolFromUser()
         {
-            AskForUserInput("Please enter y/n/true/false.");
+            AskUserAQuestion("Please enter y/n/true/false.");
             Console.ForegroundColor = ConsoleColor.White;
             string userEntry = Console.ReadLine();
             if (userEntry.Contains("y") || userEntry.Contains("true"))
@@ -252,28 +252,37 @@ namespace TransferPhotosFromCard
             }
         }
 
-        private static void AskForUserInput(string question)
+        private static void AskUserAQuestion(string question)
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(question);
+            Announce(ConsoleColor.Magenta, question);
         }
 
-        private static void AnnounceCurrentTask(string message)
+        private static void AskUserAQuestion(params string[] question)
         {
-            AnnounceCurrentTask(ConsoleColor.Cyan, message);
+            Announce(ConsoleColor.Magenta, question);
         }
 
-        private static void AnnounceCurrentTask(ConsoleColor colour, string message)
+        private static void Announce(string message)
+        {
+            Announce(ConsoleColor.Cyan, message);
+        }
+
+        private static void Announce(ConsoleColor colour, string message)
         {
             Console.ForegroundColor = colour;
             Console.WriteLine(message);
         }
 
-        private static void AnnounceCurrentTask(params string[] message)
+        private static void Announce(params string[] message)
+        {
+            Announce(ConsoleColor.Cyan, message);
+        }
+
+        private static void Announce(ConsoleColor colour, params string[] message)
         {
             for (int i = 0; i < message.Length; i++)
             {
-                if (i % 2 == 0) { Console.ForegroundColor = ConsoleColor.Cyan; }
+                if (i % 2 == 0) { Console.ForegroundColor = colour; }
                 else { Console.ForegroundColor = ConsoleColor.White; }
                 Console.Write(message[i]);
             }
@@ -282,10 +291,7 @@ namespace TransferPhotosFromCard
 
         private static void AnnounceFile(string filepath)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("Found file: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(Path.GetFileName(filepath));
+            Announce("Found file: ", Path.GetFileName(filepath));
         }
 
         private static void AnnounceGroup(IGrouping<DesiredActionForFileType, string> group)
@@ -303,7 +309,7 @@ namespace TransferPhotosFromCard
                 }
                 if (Directory.GetDirectories(directory).Length == 0)
                 {
-                    AnnounceCurrentTask("Deleting empty directory ", directory, "...");
+                    Announce("Deleting empty directory ", directory, "...");
                     Directory.Delete(directory);
                 }
             }
