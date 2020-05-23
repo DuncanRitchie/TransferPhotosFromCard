@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A3FC86FB-D879-4277-A934-54579C30BE8B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TransferPhotosFromSD</RootNamespace>
-    <AssemblyName>TransferPhotosFromSD</AssemblyName>
+    <RootNamespace>TransferPhotosFromCard</RootNamespace>
+    <AssemblyName>TransferPhotosFromCard</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
