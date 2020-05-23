@@ -1,5 +1,5 @@
 # Transfer Photos from Card
-📷 This is a console-app I made because I take a lot of photos (and sometimes video too) and manually moving files off my camera’s memory card can get tedious.
+📷 This is a console-app I made because I take a lot of photos (and sometimes video too) and manually moving files off my camera’s memory-card can get tedious.
 
 🚀 It’s very specific to my workflow, and probably won’t be something you want if you’re not me, but you can [download the executable here](https://github.com/DuncanRitchie/TransferPhotosFromCard/blob/master/TransferPhotosFromCard/bin/Release/TransferPhotosFromCard.exe).
 
@@ -15,6 +15,6 @@
 
 📂 Finally the program deletes any empty folders on the card.
 
-💻 Files are moved to my Desktop because I use Lightroom to edit my photos and videos, and its import process will organize them into folders on my hard drive, but it won’t delete files from a memory card. So I need to move my files off the card before I import them to Lightroom.
+💻 Files are moved to my Desktop because I use Lightroom to edit my photos and videos, and its import process will organize them into folders on my hard drive, but it won’t delete files from a memory-card. So I need to move my files off the card before I import them to Lightroom.
 
 👨‍💻 Made by [Duncan Ritchie](https://www.duncanritchie.co.uk/) using .NET Framework (C#) in Visual Studio, 2020 May 23.

@@ -46,7 +46,7 @@ namespace TransferPhotosFromCard
         {
             Console.Title = "Transfer Photos from Card";
             AnnounceCurrentTask(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
-            AnnounceCurrentTask("Looking for files on your memory card...\n");
+            AnnounceCurrentTask("Looking for files on your memory-card...\n");
 
             var groupedFilepaths = GetFilesFromCard(true)
                 .GroupBy(file => GetDesiredActionForFileType(file))
@@ -74,7 +74,7 @@ namespace TransferPhotosFromCard
             else
             {
                 if (warnIfNoDisk) {
-                    AnnounceCurrentTask(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory card.");
+                    AnnounceCurrentTask(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory-card.");
                 }
                 else
                 {
