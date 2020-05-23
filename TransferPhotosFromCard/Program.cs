@@ -44,6 +44,7 @@ namespace TransferPhotosFromCard
 
         static void Main(string[] args)
         {
+            Console.Title = "Transfer Photos from Card";
             AnnounceCurrentTask(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
             AnnounceCurrentTask("Looking for files on your memory card...\n");
 
