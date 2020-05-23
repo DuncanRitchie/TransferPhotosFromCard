@@ -235,7 +235,7 @@ namespace TransferPhotosFromCard
 
         private static bool GetBoolFromUser()
         {
-            AskForUserInput("Please enter y/n or true/false");
+            AskForUserInput("Please enter y/n/true/false.");
             Console.ForegroundColor = ConsoleColor.White;
             string userEntry = Console.ReadLine();
             if (userEntry.Contains("y") || userEntry.Contains("true"))
