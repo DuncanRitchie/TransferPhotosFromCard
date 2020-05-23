@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Threading;
 
 namespace TransferPhotosFromCard
 {
@@ -46,7 +47,7 @@ namespace TransferPhotosFromCard
             AnnounceCurrentTask(ConsoleColor.Yellow, "Welcome to Duncan Ritchie’s photo-transferring app.");
             AnnounceCurrentTask("Looking for files on your memory card...\n");
 
-            var groupedFilepaths = GetFilesFromCard()
+            var groupedFilepaths = GetFilesFromCard(true)
                 .GroupBy(file => GetDesiredActionForFileType(file))
                 .OrderBy(group => group.Key);
 
@@ -84,9 +85,25 @@ namespace TransferPhotosFromCard
             Console.ReadLine();
         }
 
-        private static string[] GetFilesFromCard()
+        //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
+        private static string[] GetFilesFromCard(bool warnIfNoDisk)
         {
-            return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
+            if (Directory.Exists(Disk))
+            {
+                return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
+            }
+            else
+            {
+                if (warnIfNoDisk) {
+                    AnnounceCurrentTask(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory card.");
+                }
+                else
+                {
+                    //// Prevent a StackOverflowException due to too much recursion!
+                    Thread.Sleep(1000);
+                }
+                return GetFilesFromCard(false);
+            }
         }
 
         private static void CopyDefaultDiskContents()
