@@ -53,34 +53,12 @@ namespace TransferPhotosFromCard
 
             foreach (var group in groupedFilepaths)
             {
-                AnnounceGroup(group);
-                switch (group.Key)
-                {
-                    case DesiredActionForFileType.Move:
-                        PerformActionOnSeveralFilesIfUserAllows(Move, group, "Do you want to move these files?");
-                        break;
-                    case DesiredActionForFileType.MoveAndRename:
-                        PerformActionOnSeveralFilesIfUserAllows(MoveAndRename, group, "Do you want to move and rename these files?");
-                        break;
-                    case DesiredActionForFileType.Ignore:
-                        PerformActionOnSeveralFiles(Ignore, group);
-                        break;
-                    case DesiredActionForFileType.Delete:
-                        PerformActionOnSeveralFilesIfUserAllows(Delete, group, "Do you want to delete these files?");
-                        break;
-                    case DesiredActionForFileType.AskUserForAction:
-                        PerformActionOnSeveralFiles(AskUserForAction, group);
-                        break;
-                    default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Enum no longer matches switch block...");
-                        break;
-                }
-                Console.WriteLine();
+                ProcessOneGroupOfFiles(group);
             }
 
             CopyDefaultDiskContents();
             DeleteEmptySubdirectories(Disk);
+
             AskForUserInput("The program has finished. Type Enter to exit.");
             Console.ReadLine();
         }
@@ -104,6 +82,34 @@ namespace TransferPhotosFromCard
                 }
                 return GetFilesFromCard(false);
             }
+        }
+
+        private static void ProcessOneGroupOfFiles(IGrouping<DesiredActionForFileType, string> group)
+        {
+            AnnounceGroup(group);
+            switch (group.Key)
+            {
+                case DesiredActionForFileType.Move:
+                    PerformActionOnSeveralFilesIfUserAllows(Move, group, "Do you want to move these files?");
+                    break;
+                case DesiredActionForFileType.MoveAndRename:
+                    PerformActionOnSeveralFilesIfUserAllows(MoveAndRename, group, "Do you want to move and rename these files?");
+                    break;
+                case DesiredActionForFileType.Ignore:
+                    PerformActionOnSeveralFiles(Ignore, group);
+                    break;
+                case DesiredActionForFileType.Delete:
+                    PerformActionOnSeveralFilesIfUserAllows(Delete, group, "Do you want to delete these files?");
+                    break;
+                case DesiredActionForFileType.AskUserForAction:
+                    PerformActionOnSeveralFiles(AskUserForAction, group);
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Enum no longer matches switch block...");
+                    break;
+            }
+            Console.WriteLine();
         }
 
         private static void CopyDefaultDiskContents()
