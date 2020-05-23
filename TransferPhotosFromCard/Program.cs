@@ -9,11 +9,12 @@ namespace TransferPhotosFromCard
 {
     class Program
     {
+        static string Disk = @"D:\";
         static string FolderToCopyTo = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
         enum DesiredActionForFileType
         {
-            AskUserForAction, Ignore, Move, MoveAndRename
+            AskUserForAction, Delete, Ignore, Move, MoveAndRename
         }
 
         static DesiredActionForFileType GetDesiredActionForFileType(string filepath)
@@ -34,7 +35,7 @@ namespace TransferPhotosFromCard
                 case ".int":
                 case ".mpl":
                 case ".xml":
-                    return DesiredActionForFileType.Ignore;
+                    return DesiredActionForFileType.Delete;
                 default:
                     return DesiredActionForFileType.AskUserForAction;
             }
@@ -63,6 +64,9 @@ namespace TransferPhotosFromCard
                     case DesiredActionForFileType.Ignore:
                         PerformActionOnSeveralFiles(Ignore, group);
                         break;
+                    case DesiredActionForFileType.Delete:
+                        PerformActionOnSeveralFilesIfUserAllows(Delete, group, "Do you want to delete these files?");
+                        break;
                     case DesiredActionForFileType.AskUserForAction:
                         PerformActionOnSeveralFiles(AskUserForAction, group);
                         break;
@@ -73,13 +77,15 @@ namespace TransferPhotosFromCard
                 }
                 Console.WriteLine();
             }
+
+            DeleteEmptySubdirectories(Disk);
             AskForUserInput("The program has finished. Type Enter to exit.");
             Console.ReadLine();
         }
 
         private static string[] GetFilesFromCard()
         {
-            return Directory.GetFiles(@"D:\", "*", SearchOption.AllDirectories);
+            return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
         }
 
         private static void Move(string filepath)
@@ -102,6 +108,12 @@ namespace TransferPhotosFromCard
         private static void Ignore(string filepath)
         {
             AnnounceCurrentTask("", Path.GetFileName(filepath), " will not be copied.");
+        }
+
+        private static void Delete(string filepath)
+        {
+            AnnounceCurrentTask("Deleting ", Path.GetFileName(filepath), "...");
+            File.Delete(filepath);
         }
 
         private static void AskUserForAction(string filepath)
@@ -204,6 +216,23 @@ namespace TransferPhotosFromCard
         private static void AnnounceGroup(IGrouping<DesiredActionForFileType, string> group)
         {
             PerformActionOnSeveralFiles(AnnounceFile, group);
+        }
+
+        private static void DeleteEmptySubdirectories(string directory)
+        {
+            if (Directory.GetFiles(directory, "*", SearchOption.AllDirectories).Length == 0)
+            {
+                foreach (string subdirectory in Directory.GetDirectories(directory))
+                {
+                    DeleteEmptySubdirectories(subdirectory);
+                }
+                if (Directory.GetDirectories(directory).Length == 0
+                    && !directory.Equals(Disk))
+                {
+                    AnnounceCurrentTask("Deleting empty directory ", directory, "...");
+                    Directory.Delete(directory);
+                }
+            }
         }
     }
 }
