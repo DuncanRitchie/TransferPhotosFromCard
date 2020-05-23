@@ -1,4 +1,4 @@
-# TransferPhotosFromCard
+# Transfer Photos from Card
 📷 This is a console-app I made because I take a lot of photos (and sometimes video too) and manually moving files off my camera’s memory card can get tedious.
 
 🚀 It’s very specific to my workflow, and probably won’t be something you want if you’re not me, but you can [download the executable here](https://github.com/DuncanRitchie/TransferPhotosFromCard/blob/master/TransferPhotosFromCard/bin/Release/TransferPhotosFromCard.exe).
