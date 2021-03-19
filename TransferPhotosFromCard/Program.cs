@@ -32,9 +32,12 @@ namespace TransferPhotosFromCard
                 case ".bnp":
                 case ".cpi":
                 case ".dat":
+                case ".dsc":
                 case ".inp":
                 case ".int":
+                case ".lst":
                 case ".mpl":
+                case ".trashes":
                 case ".xml":
                     return DesiredActionForFileType.Delete;
                 default:
