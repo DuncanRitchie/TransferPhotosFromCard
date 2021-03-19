@@ -78,7 +78,7 @@ namespace TransferPhotosFromCard
                 catch
                 {
                     Disk = @"E:\";
-                    return GetFilesFromCard(false);
+                    return GetFilesFromCard(true);
                 }
             }
             //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
