@@ -69,7 +69,17 @@ namespace TransferPhotosFromCard
         {
             if (Directory.Exists(Disk))
             {
-                return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
+                //// Default drive is D:\, but if D:\ is a hard drive, this might throw
+                //// due to files being “inaccessible”. So we try E:\ if that happens.
+                try
+                {
+                    return Directory.GetFiles(Disk, "*", SearchOption.AllDirectories);
+                }
+                catch
+                {
+                    Disk = @"E:\";
+                    return GetFilesFromCard(false);
+                }
             }
             //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
             else
