@@ -1,9 +1,9 @@
 # Transfer Photos from Card
-📷 This is a console-app I made because I take a lot of photos (and sometimes video too) and manually moving files off my camera’s memory-card can get tedious.
+📷 This is a console-app I made because I take a lot of photos (and sometimes video too) and manually moving files off my camera’s memory-card can get a little tedious.
 
-🚀 It’s very specific to my workflow, and probably won’t be something you want if you’re not me, but you can [download the executable here](https://github.com/DuncanRitchie/TransferPhotosFromCard/blob/master/TransferPhotosFromCard/bin/Release/TransferPhotosFromCard.exe).
+🚀 It’s very specific to my workflow, and probably won’t be something you want if you’re not me, but you can [download the executable here](https://github.com/DuncanRitchie/TransferPhotosFromCard/blob/main/TransferPhotosFromCard/bin/Release/TransferPhotosFromCard.exe).
 
-🔌 It waits for a device to be inserted in drive `D:\` , then lists the files, grouped according to the action it expects me (the user) to take on them.
+🔌 It waits for a device to be inserted in drive `D:\` (or `E:\` or `F:\` ), then lists the files, grouped according to the action it expects me (the user) to take on them.
 
 🖼️ If there are `.jpg` files on the disk, I get the option to move them to my Desktop.
 
