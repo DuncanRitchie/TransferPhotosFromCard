@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace TransferPhotosFromCard
@@ -33,6 +31,7 @@ namespace TransferPhotosFromCard
                 case ".cpi":
                 case ".dat":
                 case ".dsc":
+                case ".ini":
                 case ".inp":
                 case ".int":
                 case ".lst":
@@ -40,6 +39,14 @@ namespace TransferPhotosFromCard
                 case ".trashes":
                 case ".xml":
                     return DesiredActionForFileType.Delete;
+                case ".b00":
+                case ".d00":
+                case ".cpc":
+                case ".cpg":
+                case ".tbl":
+                case ".tdt":
+                case ".tid":
+                    return DesiredActionForFileType.Ignore;
                 default:
                     return DesiredActionForFileType.AskUserForAction;
             }
@@ -87,7 +94,8 @@ namespace TransferPhotosFromCard
             //// If there’s no card, it waits for a card to be inserted, then returns the filepaths.
             else
             {
-                if (warnIfNoDisk) {
+                if (warnIfNoDisk)
+                {
                     Announce(ConsoleColor.Red, $"Disk {Disk} does not exist. Please insert a memory-card.");
                 }
                 else
@@ -194,7 +202,7 @@ namespace TransferPhotosFromCard
         private static void MoveAndRename(string filepath)
         {
             string filename = Path.GetFileName(filepath);
-            string newFileName = $"{File.GetCreationTime(filepath).ToString("yyyy-MM-dd hh-mm-ss")}{Path.GetExtension(filepath)}";
+            string newFileName = $"{File.GetCreationTime(filepath):yyyy-MM-dd hh-mm-ss}{Path.GetExtension(filepath)}";
             string newPath = Path.Combine(FolderToCopyTo, newFileName);
             Announce("Renaming ", filename, " to ", newFileName, " and moving it to ", FolderToCopyTo, "...");
             File.Move(filepath, newPath);
